@@ -1,0 +1,15 @@
+group 'org.apache.cassandra'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+
+dependencies {
+
+    compile group: 'com.google.inject', name: 'guice', version: '4.2.2'
+
+    // Had to bring in vert.x core dependency to align the logging frameworks, would love to avoid it though.
+    compile group: 'io.vertx', name: 'vertx-core', version: '3.6.3'
+}
+
+

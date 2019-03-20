@@ -13,10 +13,17 @@ version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
+subprojects {
+    apply plugin: 'java'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
 repositories {
     mavenCentral()
 }
-
 // Take the application out once we're running via Cassandra
 mainClassName = "org.apache.cassandra.sidecar.CassandraSidecarDaemon"
 applicationName = 'CassandraSidecarDaemon'
@@ -75,6 +82,12 @@ configurations {
 }
 
 dependencies {
+    compile project(':sidecar-common')
+
+    // Ideally version specific module gets loaded during package time or using different class loader
+    // For now, I am hard coding cass30 dependency to make progress
+    compile project(':cass30')
+
     compile 'io.vertx:vertx-web:3.6.3'
     compile 'io.vertx:vertx-dropwizard-metrics:3.6.3'
     compile 'io.vertx:vertx-web-client:3.6.3'
@@ -84,7 +97,6 @@ dependencies {
     compile 'ch.qos.logback:logback-core:1.2.3'
     compile 'ch.qos.logback:logback-classic:1.2.3'
     compile 'com.datastax.cassandra:cassandra-driver-core:3.6+'
-    compile group: 'com.google.inject', name: 'guice', version: '4.2.2'
     compile group: 'org.apache.commons', name: 'commons-configuration2', version: '2.4'
 
     runtime group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.3'

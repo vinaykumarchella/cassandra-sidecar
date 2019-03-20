@@ -53,6 +53,7 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.codec.BodyCodec;
 import io.vertx.junit5.VertxTestContext;
+import org.apache.cassandra.sidecar.common.Configuration;
 import org.apache.cassandra.sidecar.routes.HealthCheck;
 import org.apache.cassandra.sidecar.routes.HealthService;
 
@@ -205,7 +206,8 @@ public class HealthServiceIntegrationTest
             HealthService service = new HealthService(new Configuration.Builder()
                                                       .setHealthCheckFrequency(1000)
                                                       .build(),
-                                                      check, session);
+                                                      // TODO: Get RPC Interaction working in IntegTest
+                                                      check, session, null);
             service.start();
             try
             {

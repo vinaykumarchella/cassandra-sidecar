@@ -16,9 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.cassandra.sidecar;
-
-import javax.annotation.Nullable;
+package org.apache.cassandra.sidecar.common;
 
 /**
  * Sidecar configuration
@@ -33,32 +31,30 @@ public class Configuration
 
     /* Sidecar's HTTP REST API port */
     private final Integer port;
-
-    /* Sidecar's listen address */
-    private String host;
-
     /* Healthcheck frequency in miilis */
     private final Integer healthCheckFrequencyMillis;
-
     /* SSL related settings */
-    @Nullable
     private final String keyStorePath;
-    @Nullable
     private final String keyStorePassword;
-
-    @Nullable
     private final String trustStorePath;
-    @Nullable
     private final String trustStorePassword;
-
     private final boolean isSslEnabled;
+    /* Sidecar's listen address */
+    private String host;
+    private String cassandraJmxAddress = "127.0.0.1";
+    private int cassandraJmxPort = 7100;
+    private int jmxConnectionMonitorPeriodInMs = 60000;
+    private int jmxCacheTtl = 10000;
+    private String jmxUsername = null;
+    private String jmxPassword = null;
+
 
     public Configuration(String cassandraHost, Integer cassandraPort, String host, Integer port,
                          Integer healthCheckFrequencyMillis, boolean isSslEnabled,
-                         @Nullable String keyStorePath,
-                         @Nullable String keyStorePassword,
-                         @Nullable String trustStorePath,
-                         @Nullable String trustStorePassword)
+                         String keyStorePath, String keyStorePassword, String trustStorePath,
+                         String trustStorePassword, String cassandraJmxAddress, int cassandraJmxPort,
+                         int jmxConnectionMonitorPeriodInMs, int jmxCacheTtl, String jmxUsername,
+                         String jmxPassword)
     {
         this.cassandraHost = cassandraHost;
         this.cassandraPort = cassandraPort;
@@ -71,6 +67,13 @@ public class Configuration
         this.trustStorePath = trustStorePath;
         this.trustStorePassword = trustStorePassword;
         this.isSslEnabled = isSslEnabled;
+
+        this.cassandraJmxAddress = cassandraJmxAddress;
+        this.cassandraJmxPort = cassandraJmxPort;
+        this.jmxConnectionMonitorPeriodInMs = jmxConnectionMonitorPeriodInMs;
+        this.jmxCacheTtl = jmxCacheTtl;
+        this.jmxUsername = jmxUsername;
+        this.jmxPassword = jmxPassword;
     }
 
     /**
@@ -94,7 +97,7 @@ public class Configuration
     }
 
     /**
-     *  Sidecar's listen address
+     * Sidecar's listen address
      *
      * @return
      */
@@ -138,7 +141,6 @@ public class Configuration
      *
      * @return
      */
-    @Nullable
     public String getKeyStorePath()
     {
         return keyStorePath;
@@ -149,7 +151,6 @@ public class Configuration
      *
      * @return
      */
-    @Nullable
     public String getKeystorePassword()
     {
         return keyStorePassword;
@@ -160,7 +161,6 @@ public class Configuration
      *
      * @return
      */
-    @Nullable
     public String getTrustStorePath()
     {
         return trustStorePath;
@@ -171,11 +171,41 @@ public class Configuration
      *
      * @return
      */
-    @Nullable
     public String getTruststorePassword()
     {
         return trustStorePassword;
     }
+
+    public String getCassandraJmxAddress()
+    {
+        return cassandraJmxAddress;
+    }
+
+    public int getCassandraJmxPort()
+    {
+        return cassandraJmxPort;
+    }
+
+    public int getJmxConnectionMonitorPeriodInMs()
+    {
+        return jmxConnectionMonitorPeriodInMs;
+    }
+
+    public int getJmxCacheTtl()
+    {
+        return jmxCacheTtl;
+    }
+
+    public String getJmxUsername()
+    {
+        return jmxUsername;
+    }
+
+    public String getJmxPassword()
+    {
+        return jmxPassword;
+    }
+
 
     /**
      * Configuration Builder
@@ -192,6 +222,12 @@ public class Configuration
         private String trustStorePath;
         private String trustStorePassword;
         private boolean isSslEnabled;
+        private String cassandraJmxAddress;
+        private int cassandraJmxPort;
+        private int jmxConnectionMonitorPeriodInMs = 60000;
+        private int jmxCacheTtl = 10000;
+        private String jmxUsername = null;
+        private String jmxPassword = null;
 
         public Builder setCassandraHost(String host)
         {
@@ -253,10 +289,47 @@ public class Configuration
             return this;
         }
 
+        public Builder setCassandraJmxAddress(String cassandraJmxAddress)
+        {
+            this.cassandraJmxAddress = cassandraJmxAddress;
+            return this;
+        }
+
+        public Builder setCassandraJmxPort(int cassandraJmxPort)
+        {
+            this.cassandraJmxPort = cassandraJmxPort;
+            return this;
+        }
+
+        public Builder setJmxConnectionMonitorPeriodInMs(int jmxConnectionMonitorPeriodInMs)
+        {
+            this.jmxConnectionMonitorPeriodInMs = jmxConnectionMonitorPeriodInMs;
+            return this;
+        }
+
+        public Builder setJmxCacheTtl(int jmxCacheTtl)
+        {
+            this.jmxCacheTtl = jmxCacheTtl;
+            return this;
+        }
+
+        public Builder setJmxUsername(String jmxUsername)
+        {
+            this.jmxUsername = jmxUsername;
+            return this;
+        }
+
+        public Builder setJmxPassword(String jmxPassword)
+        {
+            this.jmxPassword = jmxPassword;
+            return this;
+        }
+
         public Configuration build()
         {
             return new Configuration(cassandraHost, cassandraPort, host, port, healthCheckFrequencyMillis, isSslEnabled,
-                                     keyStorePath, keyStorePassword, trustStorePath, trustStorePassword);
+                                     keyStorePath, keyStorePassword, trustStorePath, trustStorePassword, cassandraJmxAddress,
+                                     cassandraJmxPort, jmxConnectionMonitorPeriodInMs, jmxCacheTtl, jmxUsername, jmxPassword);
         }
     }
 }

@@ -5,6 +5,14 @@
 cassandra:
   - host: localhost
   - port: 9042
+  - jmx_address: "127.0.0.1"
+  - jmx_port: 7100
+  - jmx_cache_ttl_ms: 10000
+  - jmx_connection_monitor_period_ms: 60000
+#  - jmx_username: username
+#  - jmx_password: password
+
+
 
 sidecar:
   - host: 0.0.0.0

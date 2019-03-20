@@ -19,6 +19,7 @@
 package org.apache.cassandra.sidecar;
 
 import io.vertx.core.Vertx;
+import org.apache.cassandra.sidecar.common.Configuration;
 
 /**
  * Changes to the TestModule to define SSL dependencies

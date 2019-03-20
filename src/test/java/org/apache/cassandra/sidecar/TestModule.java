@@ -27,6 +27,8 @@ import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.net.JksOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.LoggerHandler;
+import org.apache.cassandra.sidecar.common.Configuration;
+import org.apache.cassandra.sidecar.mocks.MockCassRpcInteraction;
 import org.apache.cassandra.sidecar.mocks.MockHealthCheck;
 import org.apache.cassandra.sidecar.routes.HealthService;
 
@@ -53,7 +55,7 @@ public class TestModule extends AbstractModule
     @Singleton
     public HealthService healthService(Configuration config, MockHealthCheck check)
     {
-        return new HealthService(config, check, null);
+        return new HealthService(config, check, null, new MockCassRpcInteraction());
     }
 
     @Provides

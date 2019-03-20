@@ -36,6 +36,7 @@ import io.vertx.ext.dropwizard.DropwizardMetricsOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.LoggerHandler;
 import io.vertx.ext.web.handler.StaticHandler;
+import org.apache.cassandra.sidecar.common.Configuration;
 import org.apache.cassandra.sidecar.routes.HealthService;
 
 /**
@@ -118,6 +119,13 @@ public class MainModule extends AbstractModule
                            .setTrustStorePath(yamlConf.get(String.class, "sidecar.ssl.truststore.path", null))
                            .setTrustStorePassword(yamlConf.get(String.class, "sidecar.ssl.truststore.password", null))
                            .setSslEnabled(yamlConf.get(Boolean.class, "sidecar.ssl.enabled", false))
+                           .setCassandraJmxAddress(yamlConf.get(String.class, "cassandra.jmx_address", "127.0.0.1"))
+                           .setCassandraJmxPort(yamlConf.get(Integer.class, "cassandra.jmx_port", 7100))
+                           .setJmxCacheTtl(yamlConf.get(Integer.class, "cassandra.jmx_cache_ttl_ms", 10000))
+                           .setJmxConnectionMonitorPeriodInMs(
+                           yamlConf.get(Integer.class, "cassandra.jmx_connection_monitor_period_ms", 60000))
+                           .setJmxUsername(yamlConf.get(String.class, "cassandra.jmx_username", null))
+                           .setJmxPassword(yamlConf.get(String.class, "cassandra.jmx_password", null))
                            .build();
     }
 }

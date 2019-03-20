@@ -1,0 +1,11 @@
+dependencies {
+    compile project(':sidecar-common')
+
+
+    compile(group: 'org.apache.cassandra', name: 'cassandra-all', version: '3.0.16') {
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+        exclude group: 'org.slf4j', module: 'log4j-over-slf4j'
+        exclude group: 'org.codehaus.jackson', module: '*'
+        exclude group: 'log4j', module: 'log4j'
+    }
+}

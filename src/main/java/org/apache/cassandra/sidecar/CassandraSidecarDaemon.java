@@ -27,6 +27,8 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.vertx.core.http.HttpServer;
+import org.apache.cassandra.sidecar.cass30.Cass30SidecarModule;
+import org.apache.cassandra.sidecar.common.Configuration;
 import org.apache.cassandra.sidecar.routes.HealthService;
 import org.apache.cassandra.sidecar.utils.SslUtils;
 
@@ -102,7 +104,9 @@ public class CassandraSidecarDaemon
 
     public static void main(String[] args)
     {
-        CassandraSidecarDaemon app = Guice.createInjector(new MainModule())
+        //TODO: Ideally Cass30SidecarModule should be loaded at runtime or package time
+        CassandraSidecarDaemon app = Guice.createInjector(new MainModule(), new Cass30SidecarModule()
+        )
                                           .getInstance(CassandraSidecarDaemon.class);
 
         app.start();

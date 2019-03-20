@@ -19,7 +19,6 @@
 package org.apache.cassandra.sidecar.routes;
 
 import java.util.function.Supplier;
-
 import javax.annotation.Nullable;
 
 import com.datastax.driver.core.ResultSet;

@@ -22,7 +22,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
@@ -39,7 +38,8 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
 import org.apache.cassandra.sidecar.CQLSession;
-import org.apache.cassandra.sidecar.Configuration;
+import org.apache.cassandra.sidecar.common.CassRpcInteraction;
+import org.apache.cassandra.sidecar.common.Configuration;
 
 /**
  * Tracks health check[s] and provides a REST response that should match that defined by api.yaml
@@ -51,19 +51,22 @@ public class HealthService implements Host.StateListener
     private final int checkPeriodMs;
     private final Supplier<Boolean> check;
     private volatile boolean registered = false;
+    private static final String NA = "NOT_AVAILABLE";
 
     @Nullable
     private final CQLSession session;
 
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     private volatile boolean lastKnownStatus = false;
-
+    private final CassRpcInteraction cassRpcInteraction;
     @Inject
-    public HealthService(Configuration config, HealthCheck check, @Nullable CQLSession session)
+    public HealthService(Configuration config, HealthCheck check, @Nullable CQLSession session,
+                         CassRpcInteraction cassRpcInteraction)
     {
         this.checkPeriodMs = config.getHealthCheckFrequencyMillis();
         this.session = session;
         this.check = check;
+        this.cassRpcInteraction = cassRpcInteraction;
     }
 
     public synchronized void start()
@@ -108,11 +111,12 @@ public class HealthService implements Host.StateListener
     {
         try
         {
+
             int status = lastKnownStatus ? HttpResponseStatus.OK.code() : HttpResponseStatus.SERVICE_UNAVAILABLE.code();
             rc.response()
               .putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON)
               .setStatusCode(status)
-              .end(Json.encode(ImmutableMap.of("status", lastKnownStatus ? "OK" : "NOT_OK")));
+              .end(Json.encode(ImmutableMap.of("status", lastKnownStatus ? "OK" : "NOT_OK", "host_id", getHostId())));
         }
         catch (Exception e)
         {
@@ -147,5 +151,18 @@ public class HealthService implements Host.StateListener
 
     public void onUnregister(Cluster cluster)
     {
+    }
+
+    private String getHostId()
+    {
+        try
+        {
+            return cassRpcInteraction.getLocalHostId();
+        }
+        catch (Exception e)
+        {
+            logger.error("Exception in getting Local HostID via CassRpcInteraction", e);
+        }
+        return NA;
     }
 }

@@ -2,7 +2,6 @@ package org.apache.cassandra.sidecar;
 
 import java.net.InetSocketAddress;
 import java.util.Collections;
-
 import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -20,6 +19,7 @@ import com.datastax.driver.core.policies.RoundRobinPolicy;
 import com.datastax.driver.core.policies.WhiteListPolicy;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.apache.cassandra.sidecar.common.Configuration;
 
 /**
  * Represents a connection to Cassandra cluster. Currently supports returning the local connection only as

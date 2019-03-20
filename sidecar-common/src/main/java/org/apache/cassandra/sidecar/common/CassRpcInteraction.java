@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.cassandra.sidecar.rpc;
+package org.apache.cassandra.sidecar.common;
 
 /**
  * The layer of abstraction on top of Cassandra's RPC APIs. As the RPC(JMX) APIs change frequently
